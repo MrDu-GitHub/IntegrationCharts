@@ -15,6 +15,10 @@
 		CC5CCA0F23014556009937CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC5CCA0D23014556009937CE /* LaunchScreen.storyboard */; };
 		CC5CCA1223014556009937CE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CC5CCA1123014556009937CE /* main.m */; };
 		CC5CCA2B23029BFD009937CE /* LengthCurveData.plist in Resources */ = {isa = PBXBuildFile; fileRef = CC5CCA2A23029BFD009937CE /* LengthCurveData.plist */; };
+		CC5CCA582303DC9C009937CE /* XYMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CCA552303DC9C009937CE /* XYMarkerView.swift */; };
+		CC5CCA592303DC9C009937CE /* BalloonMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CCA562303DC9C009937CE /* BalloonMarker.swift */; };
+		CC5CCA5A2303DC9C009937CE /* RadarMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CCA572303DC9C009937CE /* RadarMarkerView.swift */; };
+		CC5CCA5C2303DD41009937CE /* RadarMarkerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CC5CCA5B2303DD41009937CE /* RadarMarkerView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +37,10 @@
 		CC5CCA1123014556009937CE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CC5CCA262302589A009937CE /* ChareTestDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ChareTestDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		CC5CCA2A23029BFD009937CE /* LengthCurveData.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = LengthCurveData.plist; sourceTree = "<group>"; };
+		CC5CCA552303DC9C009937CE /* XYMarkerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XYMarkerView.swift; sourceTree = "<group>"; };
+		CC5CCA562303DC9C009937CE /* BalloonMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BalloonMarker.swift; sourceTree = "<group>"; };
+		CC5CCA572303DC9C009937CE /* RadarMarkerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadarMarkerView.swift; sourceTree = "<group>"; };
+		CC5CCA5B2303DD41009937CE /* RadarMarkerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RadarMarkerView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,8 +104,20 @@
 				CC5CCA2A23029BFD009937CE /* LengthCurveData.plist */,
 				CC5CCA1123014556009937CE /* main.m */,
 				CC5CCA262302589A009937CE /* ChareTestDemo-Bridging-Header.h */,
+				CC5CCA542303DC9C009937CE /* Components */,
 			);
 			path = ChareTestDemo;
+			sourceTree = "<group>";
+		};
+		CC5CCA542303DC9C009937CE /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				CC5CCA5B2303DD41009937CE /* RadarMarkerView.xib */,
+				CC5CCA552303DC9C009937CE /* XYMarkerView.swift */,
+				CC5CCA562303DC9C009937CE /* BalloonMarker.swift */,
+				CC5CCA572303DC9C009937CE /* RadarMarkerView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,6 +183,7 @@
 				CC5CCA0F23014556009937CE /* LaunchScreen.storyboard in Resources */,
 				CC5CCA0C23014556009937CE /* Assets.xcassets in Resources */,
 				CC5CCA2B23029BFD009937CE /* LengthCurveData.plist in Resources */,
+				CC5CCA5C2303DD41009937CE /* RadarMarkerView.xib in Resources */,
 				CC5CCA0A23014554009937CE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,8 +249,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC5CCA0723014554009937CE /* ViewController.m in Sources */,
+				CC5CCA582303DC9C009937CE /* XYMarkerView.swift in Sources */,
 				CC5CCA1223014556009937CE /* main.m in Sources */,
+				CC5CCA5A2303DC9C009937CE /* RadarMarkerView.swift in Sources */,
 				CC5CCA0423014554009937CE /* AppDelegate.m in Sources */,
+				CC5CCA592303DC9C009937CE /* BalloonMarker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,6 +399,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = J8548N9PJ6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -402,6 +427,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = J8548N9PJ6;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
