@@ -22,7 +22,7 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 
 #define NavigationBarColor kRGBColor(28, 139, 149) // 导航栏背景色
 
-@interface ViewController ()
+@interface ViewController () <ChartViewDelegate, IChartAxisValueFormatter>
 
 @property (nonatomic, strong) LineChartView *chartView;
 @property (nonatomic, strong) LineChartData *data;
@@ -40,7 +40,7 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     
     _chartView = [[LineChartView alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-100)];
     [self.view addSubview:self.chartView];
-    
+    _chartView.delegate = self;
     // 是否开启描述label
     _chartView.chartDescription.enabled = NO;
     _chartView.rightAxis.enabled = NO; // 不绘制右边y轴
@@ -81,8 +81,13 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     ChartXAxis*xAxis =_chartView.xAxis;
     xAxis.labelPosition = XAxisLabelPositionBottom;
     xAxis.axisLineColor = [UIColor lightGrayColor];
+    xAxis.axisLineDashPhase = 2;
+    xAxis.labelTextColor = GSColorWithHex(0x333333);
     xAxis.labelFont = [UIFont systemFontOfSize:12];
     xAxis.labelTextColor = [UIColor lightGrayColor];
+    xAxis.valueFormatter = self; // 显示自定义X数据
+//    xAxis.spaceMin
+//    xAxis.axisMinimum = 1;
 //    xAxis.granularity = 1.0;
     
     xAxis.drawAxisLineEnabled = YES; //是否画x轴线
@@ -198,6 +203,33 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     [_chartView notifyDataSetChanged];
 }
 
+#pragma chartViewDelegate
+- (void)chartValueSelected:(ChartViewBase * _Nonnull)chartView entry:(ChartDataEntry * _Nonnull)entry highlight:(ChartHighlight * _Nonnull)highlight {
+    NSLog(@"lalalal");
+}
+
+#pragma mark - IAxisValueFormatter
+- (NSString *)stringForValue:(double)value
+                        axis:(ChartAxisBase *)axis
+{
+    if (value < 12) {
+        if (value == 0) {
+            return @"0岁";
+        }
+        
+        return [NSString stringWithFormat:@"%zd个月", (NSInteger)value%12];
+    }else {
+        if ((NSInteger)value%12) {
+            return [NSString stringWithFormat:@"%zd岁%zd个月", (NSInteger)value/12, (NSInteger)value%12];
+        }else {
+            return [NSString stringWithFormat:@"%zd岁", (NSInteger)value/12];
+        }
+    }
+    return [NSString stringWithFormat:@""];
+}
+
+
+#pragma mark - lazy loading
 - (void)boyBabyDataArray {
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"LengthCurveData"ofType:@"plist"];
     NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];

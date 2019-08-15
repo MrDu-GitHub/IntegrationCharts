@@ -32,8 +32,8 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
         if set.isVerticalHighlightIndicatorEnabled
         {
             context.beginPath()
-            context.move(to: CGPoint(x: point.x, y: viewPortHandler.contentTop))
-            context.addLine(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom))
+            context.move(to: CGPoint(x: point.x, y: viewPortHandler.contentBottom))
+            context.addLine(to: CGPoint(x: point.x, y: point.y))
             context.strokePath()
         }
         
@@ -42,7 +42,7 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
         {
             context.beginPath()
             context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: point.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: point.y))
+            context.addLine(to: CGPoint(x: point.x, y: point.y))
             context.strokePath()
         }
     }
