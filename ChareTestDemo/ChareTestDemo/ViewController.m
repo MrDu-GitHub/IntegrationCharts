@@ -44,6 +44,7 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     // 是否开启描述label
     _chartView.chartDescription.enabled = NO;
     _chartView.rightAxis.enabled = NO; // 不绘制右边y轴
+    _chartView.legend.enabled = NO; // 底部描述
     
     [self initchartViewWithLeftaxisMaxValue:100 MinValue:100];
     
@@ -55,13 +56,18 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 - (void)initchartViewWithLeftaxisMaxValue:(double)maxValue MinValue:(double)minValue{
     // 气泡
     BalloonMarker *marker = [[BalloonMarker alloc]
-                             initWithColor: [UIColor colorWithWhite:180/255. alpha:1.0]
-                             font: [UIFont systemFontOfSize:12.0]
+                             initWithColor: NavigationBarColor
+                             font: [UIFont systemFontOfSize:14.0]
                              textColor: UIColor.whiteColor
                              insets: UIEdgeInsetsMake(8.0, 8.0, 20.0, 8.0)];
     marker.chartView = _chartView;
     marker.minimumSize = CGSizeMake(80.f, 40.f);
     _chartView.marker = marker;
+    
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"LengthCurveData"ofType:@"plist"];
+    NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+    
+    marker.dataArray = dictionary[@"BoyBabyHeight"];
     
     // 设置左Y轴
     ChartYAxis *leftAxis = _chartView.leftAxis;
@@ -76,6 +82,7 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 //    leftAxis.zeroLineColor = [UIColor lightGrayColor]; //左Y轴底线条颜色
     leftAxis.drawZeroLineEnabled = YES;
     leftAxis.drawLimitLinesBehindDataEnabled = YES;
+    leftAxis.granularityEnabled = YES; //去重
 
     // 设置X轴
     ChartXAxis*xAxis =_chartView.xAxis;
@@ -86,10 +93,8 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     xAxis.labelFont = [UIFont systemFontOfSize:12];
     xAxis.labelTextColor = [UIColor lightGrayColor];
     xAxis.valueFormatter = self; // 显示自定义X数据
-//    xAxis.spaceMin
-//    xAxis.axisMinimum = 1;
-//    xAxis.granularity = 1.0;
-    
+    xAxis.granularityEnabled = YES; //去重
+
     xAxis.drawAxisLineEnabled = YES; //是否画x轴线
     xAxis.drawGridLinesEnabled = YES; //是否画网格
     xAxis.axisMaximum = 23.0;
@@ -136,16 +141,13 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
             lineChat.lineWidth = 0.7;
             lineChat.circleRadius = 4.0;
             lineChat.lineDashLengths = @[@4.f, @2.f];
-//            lineChat.fillAlpha = 65/255.0; // 填充颜色
-//            lineChat.fillColor = [UIColor colorWithRed:51/255.f green:181/255.f blue:229/255.f alpha:1.f];
-//            lineChat.highlightColor = [UIColor colorWithRed:244/255.f green:117/255.f blue:117/255.f alpha:1.f];
             lineChat.drawCirclesEnabled = NO;
             lineChat.drawValuesEnabled = NO;
             lineChat.highlightEnabled = NO;
             
             if (i == 0 || i == 3 || i==6) {
                 lineChat.lineWidth = 2.0;
-                lineChat.lineDashLengths = @[@0.0f, @0.0f];
+                lineChat.lineDashLengths = @[@0.01f, @0.01f];
                 [lineChat setColor:GSColorWithHex(0xfcd693)];
             }
             
@@ -165,7 +167,7 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     
 //    for (int i = 0; i < 1; i++)
 //    {
-        [yVals1 addObject:[[ChartDataEntry alloc] initWithX:6 y:80]];
+        [yVals1 addObject:[[ChartDataEntry alloc] initWithX:6 y:66]];
 //    }
     
    
@@ -206,6 +208,7 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 #pragma chartViewDelegate
 - (void)chartValueSelected:(ChartViewBase * _Nonnull)chartView entry:(ChartDataEntry * _Nonnull)entry highlight:(ChartHighlight * _Nonnull)highlight {
     NSLog(@"lalalal");
+    
 }
 
 #pragma mark - IAxisValueFormatter

@@ -15,12 +15,34 @@ import Charts
 
 open class BalloonMarker: MarkerImage
 {
+    // 身高曲线标准值范围
+    lazy var standardArray:[String] = {
+        () -> [String] in
+        
+        return ["3","10","25", "50", "75", "90", "97"]
+    }()
+    
+    // 婴儿标准位年龄
+    lazy var babyYear:[String] = {
+        () -> [String] in
+        
+        return ["0","2","4", "6", "9", "12", "15", "18", "21"]
+    }()
+    
+    // 儿童标准位年龄
+    lazy var childYear:[String] = {
+        () -> [String] in
+        
+        return ["2","2.5","3", "3.5", "4", "4.5", "5", "5.5", "6", "6.5", "7", "7.5", "8", "8.5", "9", "9.5", "10", "10.5", "11", "11.5", "12", "12.5", "13", "13.5", "14", "14.5", "15", "15.5", "16", "16.5", "17", "17.", "18"]
+    }()
+    
     @objc open var color: UIColor
     @objc open var arrowSize = CGSize(width: 15, height: 11)
     @objc open var font: UIFont
     @objc open var textColor: UIColor
     @objc open var insets: UIEdgeInsets
     @objc open var minimumSize = CGSize()
+    @objc open var dataArray = NSArray()
     
     fileprivate var label: String?
     fileprivate var _labelSize: CGSize = CGSize()
@@ -183,7 +205,8 @@ open class BalloonMarker: MarkerImage
     
     open override func refreshContent(entry: ChartDataEntry, highlight: Highlight)
     {
-        setLabel(String(entry.y))
+        let desString = String(format: "%.0f个月\n%@kg\nP:%@", entry.x, NSNumber(floatLiteral: entry.y), setDesString(entry: entry))
+        setLabel(String(desString))
     }
     
     @objc open func setLabel(_ newLabel: String)
@@ -203,5 +226,60 @@ open class BalloonMarker: MarkerImage
         size.width = max(minimumSize.width, size.width)
         size.height = max(minimumSize.height, size.height)
         self.size = size
+    }
+    
+    @objc open func setDesString(entry: ChartDataEntry) -> String {
+        var yearArray = babyYear
+        var year = ""
+        
+        if dataArray.count > 10 {
+            yearArray = childYear
+        }
+        
+        // 确定X标准值
+        for yearString in yearArray {
+            if (entry.x - Double(yearString)!>0.001) {
+                year = yearString
+            }else if (entry.x == Double(yearString)) {
+                year = yearString
+                break
+            }else {
+                break
+            }
+        }
+        
+        var min = 0
+        var max = 0
+        var i = 0
+        // 确定Y标准范围
+        for valueArray in dataArray {
+            let valueStrArray: NSArray = valueArray as! NSArray
+            var value = 0.0
+            
+            // 当前标准X的位置 指定的Y值
+            value = valueStrArray[yearArray.index(of: year)!] as! Double
+            
+            if (entry.y - value > 0.001) {
+                min = i
+            }else if (entry.y == value) {
+                min = i
+                max = i
+                break
+            }else {
+                max = i
+                break
+            }
+            i = i+1
+        }
+        
+        if min == max {
+            return NSString(format: "=%@", standardArray[min]) as String
+        }else if min == 6 {
+            return ">97"
+        }else if max == 0 {
+            return "<3"
+        }
+        
+        return NSString(format: "%@~%@", standardArray[min], standardArray[max]) as String
     }
 }

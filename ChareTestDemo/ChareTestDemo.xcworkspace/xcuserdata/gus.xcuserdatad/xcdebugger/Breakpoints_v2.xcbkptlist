@@ -4,18 +4,28 @@
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            scope = "0"
+            stopOnStyle = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChareTestDemo/Components/XYMarkerView.swift"
-            timestampString = "587543391.350686"
+            filePath = "ChareTestDemo/Components/BalloonMarker.swift"
+            timestampString = "587636905.909135"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
-            landmarkName = "refreshContent(entry:highlight:)"
+            startingLineNumber = "283"
+            endingLineNumber = "283"
+            landmarkName = "setDesString(entry:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ChareTestDemo/Components/RadarMarkerView.swift"
-            timestampString = "587545421.59872"
+            filePath = "ChareTestDemo/Components/BalloonMarker.swift"
+            timestampString = "587636905.909829"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "refreshContent(entry:highlight:)"
+            startingLineNumber = "280"
+            endingLineNumber = "280"
+            landmarkName = "setDesString(entry:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +51,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pods/Charts/Source/Charts/Renderers/LineChartRenderer.swift"
-            timestampString = "587549341.467579"
+            filePath = "ChareTestDemo/Components/BalloonMarker.swift"
+            timestampString = "587636905.909919"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "729"
-            endingLineNumber = "729"
-            landmarkName = "drawHighlighted(context:indices:)"
+            startingLineNumber = "278"
+            endingLineNumber = "278"
+            landmarkName = "setDesString(entry:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChareTestDemo/Components/BalloonMarker.swift"
+            timestampString = "587636905.909987"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
+            landmarkName = "setDesString(entry:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
