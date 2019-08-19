@@ -77,9 +77,9 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     leftAxis.axisLineWidth = 1;
     leftAxis.labelCount = 8;  //y轴展示多少个
     leftAxis.labelTextColor = GSColorWithHex(0x333333);
-    leftAxis.axisLineColor = GSColorWithHex(0xe6e6e6); //左Y轴线条颜色
+    leftAxis.axisLineColor = [UIColor lightGrayColor]; //左Y轴线条颜色
     leftAxis.gridColor = GSColorWithHex(0x333333); // 网格线条颜色
-//    leftAxis.zeroLineColor = [UIColor lightGrayColor]; //左Y轴底线条颜色
+    leftAxis.zeroLineColor = GSColorWithHex(0xe6e6e6); //左Y轴底线条颜色
     leftAxis.drawZeroLineEnabled = YES;
     leftAxis.drawLimitLinesBehindDataEnabled = YES;
     leftAxis.granularityEnabled = YES; //去重
@@ -89,9 +89,9 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     xAxis.labelPosition = XAxisLabelPositionBottom;
     xAxis.axisLineColor = [UIColor lightGrayColor];
     xAxis.axisLineDashPhase = 2;
+    xAxis.gridColor = GSColorWithHex(0x333333); // 网格线条颜色
     xAxis.labelTextColor = GSColorWithHex(0x333333);
     xAxis.labelFont = [UIFont systemFontOfSize:12];
-    xAxis.labelTextColor = [UIColor lightGrayColor];
     xAxis.valueFormatter = self; // 显示自定义X数据
     xAxis.granularityEnabled = YES; //去重
 
