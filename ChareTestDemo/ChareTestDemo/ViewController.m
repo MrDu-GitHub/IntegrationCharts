@@ -27,8 +27,8 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 @property (nonatomic, strong) LineChartView *chartView;
 @property (nonatomic, strong) LineChartData *data;
 
-@property (nonatomic, strong) NSArray *babyMonthArray; // 婴儿月份
-@property (nonatomic, strong) NSArray *childYearArray; // 儿童月份
+@property (nonatomic, copy) NSArray *basicDataArray; // 基础数据
+@property (nonatomic, copy) NSArray *babyMonthArray; // 婴儿月份
 
 @end
 
@@ -38,44 +38,33 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    _chartView = [[LineChartView alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-100)];
+    _chartView = [[LineChartView alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-200)];
     [self.view addSubview:self.chartView];
     _chartView.delegate = self;
-    // 是否开启描述label
-    _chartView.chartDescription.enabled = NO;
+    _chartView.chartDescription.enabled = NO; // 是否开启描述label
     _chartView.rightAxis.enabled = NO; // 不绘制右边y轴
     _chartView.legend.enabled = NO; // 底部描述
-    
-    [self initchartViewWithLeftaxisMaxValue:100 MinValue:100];
-    
-    [self boyBabyDataArray];
-    
    
+    // 设置气泡
+    BalloonMarker *markerView = [[BalloonMarker alloc] initWithColor: NavigationBarColor font: [UIFont systemFontOfSize:14.0] textColor: UIColor.whiteColor insets: UIEdgeInsetsMake(8.0, 8.0, 20.0, 8.0)];
+    markerView.chartView = _chartView;
+    markerView.minimumSize = CGSizeMake(80.f, 40.f); // 最小宽高
+    _chartView.marker = markerView;
+    
+    // 设置坐标轴
+   [self setChartViewWithAxis];
+    
+    // 添加数据绘制曲线
+    markerView.dataArray = self.basicDataArray;
+    [self drawCharViewLine];
 }
 
-- (void)initchartViewWithLeftaxisMaxValue:(double)maxValue MinValue:(double)minValue{
-    // 气泡
-    BalloonMarker *marker = [[BalloonMarker alloc]
-                             initWithColor: NavigationBarColor
-                             font: [UIFont systemFontOfSize:14.0]
-                             textColor: UIColor.whiteColor
-                             insets: UIEdgeInsetsMake(8.0, 8.0, 20.0, 8.0)];
-    marker.chartView = _chartView;
-    marker.minimumSize = CGSizeMake(80.f, 40.f);
-    _chartView.marker = marker;
-    
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"LengthCurveData"ofType:@"plist"];
-    NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
-    
-    marker.dataArray = dictionary[@"BoyBabyHeight"];
-    
+/// 设置XY轴
+- (void)setChartViewWithAxis {
     // 设置左Y轴
     ChartYAxis *leftAxis = _chartView.leftAxis;
     [leftAxis removeAllLimitLines];
-    leftAxis.axisMaximum = 120.0; //y轴最大值
-    leftAxis.axisMinimum = 40.0;
     leftAxis.axisLineWidth = 1;
-    leftAxis.labelCount = 8;  //y轴展示多少个
     leftAxis.labelTextColor = GSColorWithHex(0x333333);
     leftAxis.axisLineColor = [UIColor lightGrayColor]; //左Y轴线条颜色
     leftAxis.gridColor = GSColorWithHex(0x333333); // 网格线条颜色
@@ -83,102 +72,93 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     leftAxis.drawZeroLineEnabled = YES;
     leftAxis.drawLimitLinesBehindDataEnabled = YES;
     leftAxis.granularityEnabled = YES; //去重
-
+    leftAxis.axisMaximum = 120.0; //y轴最大值
+    leftAxis.axisMinimum = 40.0;
+    leftAxis.labelCount = 8;  //y轴展示多少个
+    
     // 设置X轴
     ChartXAxis*xAxis =_chartView.xAxis;
     xAxis.labelPosition = XAxisLabelPositionBottom;
     xAxis.axisLineColor = [UIColor lightGrayColor];
     xAxis.axisLineDashPhase = 2;
-    xAxis.gridColor = GSColorWithHex(0x333333); // 网格线条颜色
+    xAxis.gridColor = GSColorWithHex(0x333333);; // 网格线条颜色
     xAxis.labelTextColor = GSColorWithHex(0x333333);
     xAxis.labelFont = [UIFont systemFontOfSize:12];
     xAxis.valueFormatter = self; // 显示自定义X数据
-    xAxis.granularityEnabled = YES; //去重
-
     xAxis.drawAxisLineEnabled = YES; //是否画x轴线
     xAxis.drawGridLinesEnabled = YES; //是否画网格
-    xAxis.axisMaximum = 23.0;
-//    xAxis.labelCount = 9;
-    
-//    [self setDataCount:20 range:20];
+    xAxis.granularityEnabled = YES; //去重
+    xAxis.axisMaximum = 24.0;
 }
 
-/// 添加基础数据
-- (void)setData:(NSArray *)dataArray {
+- (void)drawCharViewLine {
     
     // 线条y值包装数据
-    NSMutableArray *yValsArray = [NSMutableArray arrayWithCapacity:dataArray.count];
+      NSMutableArray *yValsArray = [NSMutableArray arrayWithCapacity:_basicDataArray.count];
+      
+    // 多条曲线
+      for (int i = 0; i<_basicDataArray.count; i++) {
+          NSArray *yArray = _basicDataArray[i];
+          NSMutableArray *yVals = [[NSMutableArray alloc] init];
+          
+          for (int y = 0; y<yArray.count; y++) {
+              double val = [yArray[y] doubleValue];
+              [yVals addObject:[[ChartDataEntry alloc] initWithX:[self.babyMonthArray[y] doubleValue] y:val]];
+          }
+          
+          [yValsArray addObject:yVals];
+      }
+      
+      if (_chartView.data.dataSetCount > 0) {
+          for (int i= 0; i<_basicDataArray.count; i++) {
+              LineChartDataSet *lineChat = (LineChartDataSet *)_chartView.data.dataSets[0];
+              [lineChat replaceEntries:yValsArray[i]];
+          }
+          [_chartView.data notifyDataChanged];
+          [_chartView notifyDataSetChanged];
+      }else {
+          // LineChartDataSetArray
+          NSMutableArray *lineChartArray = [NSMutableArray arrayWithCapacity:_basicDataArray.count];
+          
+          for (int i= 0; i<_basicDataArray.count; i++) {
+              LineChartDataSet *lineChat = [[LineChartDataSet alloc] initWithEntries:yValsArray[i]];
+              lineChat.axisDependency = AxisDependencyLeft;
+              lineChat.mode = LineChartModeCubicBezier;
+              [lineChat setColor:GSColorWithHex(0xf9ce85)];
+              [lineChat setCircleColor:UIColor.whiteColor];
+              lineChat.lineWidth = 0.7;
+              lineChat.circleRadius = 4.0;
+              lineChat.lineDashLengths = @[@4.f, @2.f];
+              lineChat.drawCirclesEnabled = NO;
+              lineChat.drawValuesEnabled = NO;
+              lineChat.highlightEnabled = NO;
+
+              if (i == 0 || i == 3 || i==6) {
+                  lineChat.lineWidth = 2.0;
+                  lineChat.lineDashLengths = @[@0.01f, @0.01f];
+                  [lineChat setColor:GSColorWithHex(0xfcd693)];
+              }
+              
+              [lineChartArray addObject:lineChat];
+          }
+          
+          LineChartData *data = [[LineChartData alloc] initWithDataSets:lineChartArray];
+          _chartView.data = data;
+      }
     
-    for (int i = 0; i<dataArray.count; i++) {
-        NSArray *yArray = dataArray[i];
-        NSMutableArray *yVals = [[NSMutableArray alloc] init];
-        
-        for (int y = 0; y<yArray.count; y++) {
-            double val = [yArray[y] doubleValue];
-            [yVals addObject:[[ChartDataEntry alloc] initWithX:[self.babyMonthArray[y] doubleValue] y:val]];
-        }
-        
-        [yValsArray addObject:yVals];
-    }
-    
-    if (_chartView.data.dataSetCount > 0) {
-        for (int i= 0; i<dataArray.count; i++) {
-            LineChartDataSet *lineChat = (LineChartDataSet *)_chartView.data.dataSets[0];
-            [lineChat replaceEntries:yValsArray[i]];
-        }
-        [_chartView.data notifyDataChanged];
-        [_chartView notifyDataSetChanged];
-    }else {
-        // LineChartDataSetArray
-        NSMutableArray *lineChartArray = [NSMutableArray arrayWithCapacity:dataArray.count];
-        
-        for (int i= 0; i<dataArray.count; i++) {
-            LineChartDataSet *lineChat = [[LineChartDataSet alloc] initWithEntries:yValsArray[i]];
-            lineChat.axisDependency = AxisDependencyLeft;
-            lineChat.mode = LineChartModeCubicBezier;
-            [lineChat setColor:GSColorWithHex(0xf9ce85)];
-            [lineChat setCircleColor:UIColor.whiteColor];
-            lineChat.lineWidth = 0.7;
-            lineChat.circleRadius = 4.0;
-            lineChat.lineDashLengths = @[@4.f, @2.f];
-            lineChat.drawCirclesEnabled = NO;
-            lineChat.drawValuesEnabled = NO;
-            lineChat.highlightEnabled = NO;
-            
-            if (i == 0 || i == 3 || i==6) {
-                lineChat.lineWidth = 2.0;
-                lineChat.lineDashLengths = @[@0.01f, @0.01f];
-                [lineChat setColor:GSColorWithHex(0xfcd693)];
-            }
-            
-            [lineChartArray addObject:lineChat];
-        }
-        
-        LineChartData *data = [[LineChartData alloc] initWithDataSets:lineChartArray];
-        _chartView.data = data;
-    }
-    
-    [self setPatientData];
+    [self addPoint];
 }
 
-/// 添加患者数据
-- (void)setPatientData {
+/// 添加数据值
+- (void)addPoint {
     NSMutableArray *yVals1 = [[NSMutableArray alloc] init];
     
-//    for (int i = 0; i < 1; i++)
-//    {
-        [yVals1 addObject:[[ChartDataEntry alloc] initWithX:6 y:66]];
-//    }
-    
-   
-    
+    [yVals1 addObject:[[ChartDataEntry alloc] initWithX:6 y:66]];
     LineChartDataSet *set1 = nil;
-    
-  
-        set1 = [[LineChartDataSet alloc] initWithEntries:yVals1];
-        set1.axisDependency = AxisDependencyLeft;
-        [set1 setColor:NavigationBarColor];
-        set1.lineWidth = 1.5;
+    set1 = [[LineChartDataSet alloc] initWithEntries:yVals1];
+    set1.axisDependency = AxisDependencyLeft;
+    [set1 setColor:NavigationBarColor];
+    set1.lineWidth = 1.5;
     
     //点击选中拐点的交互样式
     set1.highlightEnabled = YES;//选中拐点,是否开启高亮效果(显示十字线)
@@ -196,22 +176,16 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
     set1.circleHoleRadius = 2.5f;//空心的半径
     set1.circleHoleColor = [UIColor whiteColor];//空心的颜色
         
-        NSMutableArray *dataSets = [[NSMutableArray alloc] init];
-        [dataSets addObject:set1];
-        
+    NSMutableArray *dataSets = [[NSMutableArray alloc] init];
+    [dataSets addObject:set1];
     [_chartView.data addDataSet:set1];
     
     [_chartView.data notifyDataChanged];
     [_chartView notifyDataSetChanged];
 }
 
-#pragma chartViewDelegate
-- (void)chartValueSelected:(ChartViewBase * _Nonnull)chartView entry:(ChartDataEntry * _Nonnull)entry highlight:(ChartHighlight * _Nonnull)highlight {
-    NSLog(@"lalalal");
-    
-}
 
-#pragma mark - IAxisValueFormatter
+#pragma mark - IAxisValueFormatter - 设置x轴显示数据
 - (NSString *)stringForValue:(double)value
                         axis:(ChartAxisBase *)axis
 {
@@ -233,29 +207,23 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 
 
 #pragma mark - lazy loading
-- (void)boyBabyDataArray {
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"LengthCurveData"ofType:@"plist"];
-    NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
-
-    [self setData:dictionary[@"BoyBabyHeight"]];
-    NSLog(@"%@", dictionary);
+/// 基础数据
+- (NSArray *)basicDataArray {
+    if (!_basicDataArray) {
+        NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"LengthCurveData"ofType:@"plist"];
+        _basicDataArray = [[NSDictionary alloc] initWithContentsOfFile:plistPath][@"BoyBabyHeight"];
+    }
+    
+    return _basicDataArray;
 }
 
-#pragma mark - lazy loading
+/// 婴儿月份 （0-2岁）
 - (NSArray *)babyMonthArray {
     if (!_babyMonthArray) {
-        _babyMonthArray = @[@0, @2, @4, @6, @9, @12, @15, @18, @21];
+        _babyMonthArray = @[@0, @2, @4, @6, @9, @12, @15, @18, @21, @24];
     }
     
     return _babyMonthArray;
-}
-
-- (NSArray *)childYearArray {
-    if (!_childYearArray) {
-        _childYearArray = @[@2, @2.5, @3, @3.5, @4, @4.5, @5, @5.5, @6, @6.5, @7, @7.5, @8, @8.5, @9, @9.5, @10, @10.5, @11, @11.5, @12, @12.5, @13, @13.5, @14, @14.5, @15, @15.5, @16, @16.5, @17, @18];
-    }
-    
-    return _childYearArray;
 }
 
 @end

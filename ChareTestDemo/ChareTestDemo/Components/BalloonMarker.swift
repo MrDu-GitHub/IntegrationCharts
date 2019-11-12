@@ -26,16 +26,11 @@ open class BalloonMarker: MarkerImage
     lazy var babyYear:[String] = {
         () -> [String] in
         
-        return ["0","2","4", "6", "9", "12", "15", "18", "21"]
+        return ["0","2","4", "6", "9", "12", "15", "18", "21", "24"]
     }()
     
-    // 儿童标准位年龄
-    lazy var childYear:[String] = {
-        () -> [String] in
-        
-        return ["2","2.5","3", "3.5", "4", "4.5", "5", "5.5", "6", "6.5", "7", "7.5", "8", "8.5", "9", "9.5", "10", "10.5", "11", "11.5", "12", "12.5", "13", "13.5", "14", "14.5", "15", "15.5", "16", "16.5", "17", "17.", "18"]
-    }()
-    
+    @objc open var dataType : Int
+    @objc open var yearType : Int
     @objc open var color: UIColor
     @objc open var arrowSize = CGSize(width: 15, height: 11)
     @objc open var font: UIFont
@@ -55,6 +50,8 @@ open class BalloonMarker: MarkerImage
         self.font = font
         self.textColor = textColor
         self.insets = insets
+        self.dataType = 0
+        self.yearType = 0
         
         _paragraphStyle = NSParagraphStyle.default.mutableCopy() as? NSMutableParagraphStyle
         _paragraphStyle?.alignment = .center
@@ -205,7 +202,34 @@ open class BalloonMarker: MarkerImage
     
     open override func refreshContent(entry: ChartDataEntry, highlight: Highlight)
     {
-        let desString = String(format: "%.0f个月\n%@kg\nP:%@", entry.x, NSNumber(floatLiteral: entry.y), setDesString(entry: entry))
+        var monthString = ""
+        
+        var month = 0
+        
+        // 2 - 18
+        if yearType == 0 {
+            month = Int((entry.x * 1.2))
+        // 0 - 2
+        }else {
+            month = Int(entry.x)
+        }
+        
+        if entry.x < 12 {
+            monthString = String(format: "%.0f个月", entry.x)
+        }else if month%12 > 0 {
+            monthString = String(format: "%d岁%d个月", month/12, month%12)
+        }else {
+            monthString = String(format: "%d岁", month/12)
+        }
+        
+        var unitString = "cm"
+        if dataType == 1 {
+            unitString = "kg"
+        }else {
+            unitString = "cm"
+        }
+        
+        let desString = String(format: "%@\n%@%@\nP:%@", monthString, String(entry.y), unitString, setDesString(entry: entry))
         setLabel(String(desString))
     }
     
@@ -231,10 +255,7 @@ open class BalloonMarker: MarkerImage
     @objc open func setDesString(entry: ChartDataEntry) -> String {
         var yearArray = babyYear
         var year = ""
-        
-        if dataArray.count > 10 {
-            yearArray = childYear
-        }
+        let tempArray = dataArray.firstObject as! NSArray
         
         // 确定X标准值
         for yearString in yearArray {
@@ -244,20 +265,22 @@ open class BalloonMarker: MarkerImage
                 year = yearString
                 break
             }else {
+                year = yearString
                 break
             }
         }
         
-        var min = 0
-        var max = 0
+        var min = 100
+        var max = 100
         var i = 0
+        
         // 确定Y标准范围
         for valueArray in dataArray {
             let valueStrArray: NSArray = valueArray as! NSArray
             var value = 0.0
             
             // 当前标准X的位置 指定的Y值
-            value = valueStrArray[yearArray.index(of: year)!] as! Double
+            value = (Double)(valueStrArray[yearArray.index(of: year)!] as! String)!
             
             if (entry.y - value > 0.001) {
                 min = i
