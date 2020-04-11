@@ -63,22 +63,21 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
 - (void)setChartViewWithAxis {
     // 设置左Y轴
     ChartYAxis *leftAxis = _chartView.leftAxis;
-    [leftAxis removeAllLimitLines];
-    leftAxis.axisLineWidth = 1;
-    leftAxis.labelTextColor = GSColorWithHex(0x333333);
+    leftAxis.axisLineWidth = 1; //线宽
+    leftAxis.labelTextColor = GSColorWithHex(0x333333); //Y轴文本颜色
     leftAxis.axisLineColor = [UIColor lightGrayColor]; //左Y轴线条颜色
     leftAxis.gridColor = GSColorWithHex(0x333333); // 网格线条颜色
     leftAxis.zeroLineColor = GSColorWithHex(0xe6e6e6); //左Y轴底线条颜色
-    leftAxis.drawZeroLineEnabled = YES;
+    leftAxis.drawZeroLineEnabled = YES; // 是否绘制 
     leftAxis.drawLimitLinesBehindDataEnabled = YES;
     leftAxis.granularityEnabled = YES; //去重
     leftAxis.axisMaximum = 120.0; //y轴最大值
-    leftAxis.axisMinimum = 40.0;
+    leftAxis.axisMinimum = 40.0; // y轴最小值
     leftAxis.labelCount = 8;  //y轴展示多少个
     
     // 设置X轴
-    ChartXAxis*xAxis =_chartView.xAxis;
-    xAxis.labelPosition = XAxisLabelPositionBottom;
+    ChartXAxis *xAxis =_chartView.xAxis;
+    xAxis.labelPosition = XAxisLabelPositionBottom; // X轴文本显示方向
     xAxis.axisLineColor = [UIColor lightGrayColor];
     xAxis.axisLineDashPhase = 2;
     xAxis.gridColor = GSColorWithHex(0x333333);; // 网格线条颜色

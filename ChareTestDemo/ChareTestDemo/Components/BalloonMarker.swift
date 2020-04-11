@@ -253,9 +253,9 @@ open class BalloonMarker: MarkerImage
     }
     
     @objc open func setDesString(entry: ChartDataEntry) -> String {
-        var yearArray = babyYear
+        let yearArray = babyYear
         var year = ""
-        let tempArray = dataArray.firstObject as! NSArray
+        _ = dataArray.firstObject as! NSArray
         
         // 确定X标准值
         for yearString in yearArray {
